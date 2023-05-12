@@ -182,7 +182,9 @@ const OpenAI = () => {
                       <div className="w-full">
                         <div className="text-sky-300 max-w-full break-words inline-block whitespace-pre-wrap">
                           {message?.name && message?.name.replace(/_/g, " ")}
-                          {!personas.includes(message?.name) && " Expert"}
+                          {!personas.includes(message?.name) &&
+                            message?.role !== "user" &&
+                            "Expert"}
                           {message?.name && ": "}
                         </div>
                         <p className="whitespace-pre-wrap break-words">
@@ -208,7 +210,9 @@ const OpenAI = () => {
                       <div className="w-full">
                         <div className="text-sky-300 max-w-full break-words inline-block whitespace-pre-wrap">
                           {message?.name && message?.name.replace(/_/g, " ")}
-                          {personas.includes(message?.name) && " Expert"}
+                          {!personas.includes(message?.name) &&
+                            message?.role !== "user" &&
+                            "Expert"}
                           {message?.name && ": "}
                         </div>
                         <p className="whitespace-pre-wrap break-words">
