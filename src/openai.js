@@ -173,7 +173,7 @@ const OpenAI = () => {
                   chatLog.map((message, index) => (
                     <div
                       key={index}
-                      className={`mb-1 p-2 rounded-lg ${
+                      className={`mb-1 p-1 rounded-lg ${
                         message.role === "user"
                           ? "text-right text-sky-300"
                           : "text-left text-white"
@@ -183,8 +183,8 @@ const OpenAI = () => {
                         <div className="text-sky-300 max-w-full break-words inline-block whitespace-pre-wrap">
                           {message?.name && message?.name.replace(/_/g, " ")}
                           {!personas.includes(message?.name) &&
-                            message?.role !== "user" &&
-                            "Expert"}
+                            message?.role === "assistant" &&
+                            " Expert"}
                           {message?.name && ": "}
                         </div>
                         <p className="whitespace-pre-wrap break-words">
@@ -201,7 +201,7 @@ const OpenAI = () => {
                   loadingChatLog.map((message, index) => (
                     <div
                       key={index}
-                      className={`mb-1 p-2 rounded-lg ${
+                      className={`mb-1 p-1 rounded-lg ${
                         message.role === "user"
                           ? "text-right text-sky-300"
                           : "text-left text-white"
@@ -211,8 +211,8 @@ const OpenAI = () => {
                         <div className="text-sky-300 max-w-full break-words inline-block whitespace-pre-wrap">
                           {message?.name && message?.name.replace(/_/g, " ")}
                           {!personas.includes(message?.name) &&
-                            message?.role !== "user" &&
-                            "Expert"}
+                            message?.role === "assistant" &&
+                            " Expert"}
                           {message?.name && ": "}
                         </div>
                         <p className="whitespace-pre-wrap break-words">
