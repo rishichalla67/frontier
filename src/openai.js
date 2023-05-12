@@ -156,8 +156,8 @@ const OpenAI = () => {
       <div className="flex flex-col items-center justify-center min-h-screen w-full bg-black p-4 h-full">
         <div className="w-full bg-black rounded shadow">
           <div className="flex flex-col h-full">
-            <div className="flex-grow mb-4 min-h-[70dvh] md:min-h-[88dvh] bg-slate-800 rounded-lg overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
-              <div className=" py-1" ref={chatLogRef}>
+            <div className="flex-grow mb-4 h-[70dvh] md:h-[88dvh] bg-slate-800 rounded-lg overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
+              <div className="overflow-y-auto py-1" ref={chatLogRef}>
                 {error && (
                   <div role="alert">
                     <div className="bg-red-500 text-white font-bold rounded-t px-4 py-2">
