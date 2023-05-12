@@ -4,6 +4,14 @@ import prompts from "./prompts.js";
 import { LightningBoltIcon as LightningBoltIconOutlined } from "@heroicons/react/outline";
 import { LightningBoltIcon as LightningBoltIconFilled } from "@heroicons/react/solid";
 
+let personas = [
+  "Elon_Musk",
+  "Jeff_Bezos",
+  "Bill_Gates",
+  "Barack_Obama",
+  "Gahndi",
+];
+
 const OpenAI = () => {
   const [outputText, setOutputText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -112,7 +120,7 @@ const OpenAI = () => {
         {
           role: response.data.choices[0].message.role,
           content: response.data.choices[0].message.content,
-          name: selectedOption.category + "_Expert",
+          name: selectedOption.category,
         },
       ]);
       setIsSending(false);
@@ -145,15 +153,11 @@ const OpenAI = () => {
 
   return (
     <>
-      {/* <Nav /> */}
       <div className="flex flex-col items-center justify-center min-h-screen w-full bg-black p-4 h-full">
         <div className="w-full bg-black rounded shadow">
           <div className="flex flex-col h-full">
-            <div className="flex-grow mb-4 min-h-[77dvh] md:min-h-[90dvh] bg-slate-800 rounded-lg">
-              <div
-                className=" py-1 h-[77dvh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100"
-                ref={chatLogRef}
-              >
+            <div className="flex-grow mb-4 min-h-[70dvh] md:min-h-[88dvh] bg-slate-800 rounded-lg overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
+              <div className=" py-1" ref={chatLogRef}>
                 {error && (
                   <div role="alert">
                     <div className="bg-red-500 text-white font-bold rounded-t px-4 py-2">
@@ -177,7 +181,8 @@ const OpenAI = () => {
                     >
                       <div className="w-full">
                         <div className="text-sky-300 max-w-full break-words inline-block whitespace-pre-wrap">
-                          {message?.name?.replace(/_/g, " ")}
+                          {message?.name && message?.name.replace(/_/g, " ")}
+                          {!personas.includes(message?.name) && " Expert"}
                           {message?.name && ": "}
                         </div>
                         <p className="whitespace-pre-wrap break-words">
@@ -202,7 +207,8 @@ const OpenAI = () => {
                     >
                       <div className="w-full">
                         <div className="text-sky-300 max-w-full break-words inline-block whitespace-pre-wrap">
-                          {message?.name?.replace(/_/g, " ")}
+                          {message?.name && message?.name.replace(/_/g, " ")}
+                          {personas.includes(message?.name) && " Expert"}
                           {message?.name && ": "}
                         </div>
                         <p className="whitespace-pre-wrap break-words">
@@ -216,15 +222,15 @@ const OpenAI = () => {
             <form onSubmit={handleClick} className="flex flex-col sm:flex-row">
               <div className="flex-grow mb-2 sm:mb-0">
                 <input
-                  className="bg-gray-800 w-full text-white px-4 py-2 rounded-lg flex-1 mr-2 text-sm sm:text-base lg:text-lg focus:outline-none"
+                  className="bg-gray-800 w-full text-white px-4 py-2 rounded-lg flex-1 mb-2 sm:mb-0 sm:mr-2 text-sm sm:text-base lg:text-lg focus:outline-none"
                   type="text"
                   placeholder="Type your message here..."
                   value={inputValue}
                   onChange={handleInputChange}
                 />
               </div>
-              <div className="flex flex-wrap items-center">
-                <div className="mb-2 sm:mb-0 sm:mx-2">
+              <div className="flex flex-wrap items-center mb-2 sm:mb-0 sm:mx-2">
+                <div className="w-[50%] md:w-auto pr-1 mb-2 sm:mb-0 sm:mx-2">
                   <select
                     className={`w-full p-2 border bg-black border-gray-300 rounded text-white`}
                     value={selectedOption.category}
@@ -233,7 +239,6 @@ const OpenAI = () => {
                         (prompt) => prompt.category === e.target.value
                       );
                       setSelectedOption(option);
-                      // setChatLog([]);
                     }}
                   >
                     {sortedPrompts.map((prompt, index) => (
@@ -246,12 +251,12 @@ const OpenAI = () => {
                             : ""
                         }`}
                       >
-                        {prompt.category} Expert
+                        {prompt.category.replace(/_/g, " ")}
                       </option>
                     ))}
                   </select>
                 </div>
-                <div className="mb-2 sm:mb-0 ml-2 sm:hidden">
+                <div className="w-[50%] pl-1 mb-2 sm:mb-0 sm:hidden">
                   <select
                     className="w-full p-2 border bg-black border-gray-300 rounded text-white"
                     value={chatModel}
@@ -265,16 +270,53 @@ const OpenAI = () => {
                 </div>
               </div>
 
-              <div className=" mb-1 sm:mb-0 sm:ml-1">
+              <div className="mb-1 sm:mb-0 sm:ml-1">
                 <button
-                  className="w-full px-4 py-2.5 text-white bg-purple-900 rounded text-bold"
+                  className="flex items-center justify-center w-full px-4 py-2.5 text-white bg-purple-900 rounded font-bold"
                   type="submit"
                   disabled={isSending}
                 >
-                  {isSending ? "Sending..." : "Send"}
+                  {isSending ? (
+                    <svg
+                      className="animate-spin h-5 w-5 mr-3"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647zM12 20a8 8 0 01-8-8H0c0 6.627 5.373 12 12 12v-4zm3-5.291a7.962 7.962 0 01-3 2.647V24c3.042 0 5.824-1.135 7.938-3l-2.647-3.009zM12 4a8 8 0 018 8h4c0-6.627-5.373-12-12-12V4z"
+                      ></path>
+                    </svg>
+                  ) : (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-6 h-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"
+                      />
+                    </svg>
+                  )}
+                  {/* <span>Send</span> */}
                 </button>
               </div>
-              <div className="pb-2 mb-2 sm:mb-0 sm:ml-2 sm:flex items-center justify-center hidden ">
+              <div className="pb-2 mb-2 sm:mb-0 sm:ml-2 sm:flex items-center justify-center hidden">
                 {chatModel === "gpt-3.5-turbo" ? (
                   <LightningBoltIconFilled
                     data-bs-toggle="tooltip"
