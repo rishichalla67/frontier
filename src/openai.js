@@ -13,22 +13,17 @@ let personas = [
 ];
 
 const OpenAI = () => {
-  const [outputText, setOutputText] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [chatLog, setChatLog] = useState([]);
   const [error, setError] = useState(null);
   const [isSending, setIsSending] = useState(false);
-  const [unformattedResponse, setUnformattedResponse] = useState("");
   const [loadingChatLog, setLoadingChatLog] = useState([]);
   const [inputValue, setInputValue] = useState("");
-  const chatLogRef = useRef(null);
   const [chatModel, setChatModel] = useState("gpt-3.5-turbo");
   const [boltFilled, setBoltFilled] = useState(true);
-  const [selectedOption, setSelectedOption] = useState({
-    category: "General",
-    prompt:
-      "As a general knowledge expert, you possess a broad understanding of various subjects, ranging from history, science, technology, and the arts, to culture, society, and current events. Your extensive knowledge base allows you to provide insights, answer questions, and engage in meaningful discussions on a wide array of topics. Whether it's through one-on-one conversations, group discussions, or online resources, your expertise helps individuals expand their horizons, foster curiosity, and gain a deeper appreciation for the world around them. Your ability to communicate complex ideas in a clear and concise manner enables people to learn and grow, while your passion for knowledge-sharing inspires others to seek out information and continue their own lifelong learning journeys. With your guidance, people can develop a well-rounded understanding of the world, empowering them to make informed decisions and engage in thoughtful discourse on a variety of subjects.",
-  });
+  const [selectedOption, setSelectedOption] = useState(
+    prompts.find((prompt) => prompt?.category === "General")
+  );
+  const chatLogRef = useRef(null);
 
   function sortPromptsAlphabetically(prompts) {
     return prompts.sort((a, b) => {
@@ -81,7 +76,6 @@ const OpenAI = () => {
     event.preventDefault();
 
     setInputValue("");
-    setIsLoading(true);
     setError(null);
     const newMessage = {
       role: "user",
@@ -98,8 +92,10 @@ const OpenAI = () => {
         "https://api.openai.com/v1/chat/completions",
         {
           messages: messages,
-          model: chatModel,
-          top_p: 0.1,
+          model: personas.includes(selectedOption?.category)
+            ? "gpt-4"
+            : chatModel,
+          top_p: 0.4,
         },
         {
           headers: {
@@ -109,11 +105,7 @@ const OpenAI = () => {
           },
         }
       );
-      const formattedResponse = formatResponse(
-        response.data.choices[0].message.content
-      );
-      setUnformattedResponse(response.data.choices[0].message.content);
-      setOutputText(formattedResponse);
+
       setChatLog([
         ...chatLog,
         newMessage,
@@ -127,7 +119,6 @@ const OpenAI = () => {
     } catch (error) {
       setError(error.response.data.error);
     }
-    setIsLoading(false);
   };
 
   useEffect(() => {
