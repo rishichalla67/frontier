@@ -122,7 +122,25 @@ const OpenAI = () => {
   };
 
   useEffect(() => {
-    chatLogRef.current.scrollTop = chatLogRef.current.scrollHeight;
+    const observer = new MutationObserver(() => {
+      setTimeout(() => {
+        const lastMessageElement = chatLogRef.current.lastChild;
+        if (lastMessageElement) {
+          lastMessageElement.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 500);
+    });
+
+    observer.observe(chatLogRef.current, { childList: true, subtree: true });
+
+    // Clean up when the component unmounts
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    // chatLogRef.current.scrollTop = chatLogRef.current.scrollHeight;
+    // const lastMessageElement = chatLogRef.current.lastChild;
+    // lastMessageElement && lastMessageElement.scrollIntoView();
     setLoadingChatLog([
       ...chatLog,
       { role: "loading", content: "Thinking... this may take some time" },
