@@ -24,7 +24,8 @@ const OpenAI = () => {
     prompts.find((prompt) => prompt?.category === "General")
   );
   const chatLogRef = useRef(null);
-
+  let gpt4 = "gpt-4-0613";
+  let gptTurbo = "gpt-3.5-turbo";
   function sortPromptsAlphabetically(prompts) {
     return prompts.sort((a, b) => {
       if (a.category < b.category) {
@@ -40,10 +41,10 @@ const OpenAI = () => {
   const sortedPrompts = sortPromptsAlphabetically(prompts);
 
   const toggleChatModel = () => {
-    if (chatModel === "gpt-3.5-turbo") {
-      setChatModel("gpt-4");
+    if (chatModel === gptTurbo) {
+      setChatModel(gpt4);
     } else {
-      setChatModel("gpt-3.5-turbo");
+      setChatModel(gptTurbo);
     }
     setBoltFilled(!boltFilled);
   };
@@ -92,9 +93,7 @@ const OpenAI = () => {
         "https://api.openai.com/v1/chat/completions",
         {
           messages: messages,
-          model: personas.includes(selectedOption?.category)
-            ? "gpt-4"
-            : chatModel,
+          model: personas.includes(selectedOption?.category) ? gpt4 : chatModel,
           top_p: 0.4,
         },
         {
@@ -178,14 +177,21 @@ const OpenAI = () => {
                     </div>
                   </div>
                 )}
-                {!isSending &&
+                {!isSending && chatLog.length === 0 ? (
+                  <p
+                    className={`mb-1 pl-2 p-1 rounded-lg text-left text-white`}
+                  >
+                    Start a conversation by typing a message below...
+                  </p>
+                ) : (
                   chatLog.map((message, index) => (
                     <div
                       key={index}
-                      className={`mb-1 p-1 rounded-lg ${
+                      hidden={isSending}
+                      className={`mb-1  p-1 rounded-lg ${
                         message.role === "user"
-                          ? "text-right text-sky-300"
-                          : "text-left text-white"
+                          ? "text-right pr-2 text-sky-300"
+                          : "text-left pl-2 text-white"
                       }`}
                     >
                       <div className="w-full">
@@ -204,7 +210,8 @@ const OpenAI = () => {
                         </p> */}
                       </div>
                     </div>
-                  ))}
+                  ))
+                )}
 
                 {isSending &&
                   loadingChatLog.map((message, index) => (
@@ -212,8 +219,8 @@ const OpenAI = () => {
                       key={index}
                       className={`mb-1 p-1 rounded-lg ${
                         message.role === "user"
-                          ? "text-right text-sky-300"
-                          : "text-left text-white"
+                          ? "text-right pr-2 text-sky-300"
+                          : "text-left pl-2 text-white"
                       }`}
                     >
                       <div className="w-full">
@@ -277,8 +284,8 @@ const OpenAI = () => {
                       setChatModel(e.target.value);
                     }}
                   >
-                    <option value="gpt-3.5-turbo">Fast Response</option>
-                    <option value="gpt-4">Quality Response</option>
+                    <option value={gptTurbo}>Fast Response</option>
+                    <option value={gpt4}>Quality Response</option>
                   </select>
                 </div>
               </div>
@@ -330,7 +337,7 @@ const OpenAI = () => {
                 </button>
               </div>
               <div className="pb-2 mb-2 sm:mb-0 sm:ml-2 sm:flex items-center justify-center hidden">
-                {chatModel === "gpt-3.5-turbo" ? (
+                {chatModel === gptTurbo ? (
                   <LightningBoltIconFilled
                     data-bs-toggle="tooltip"
                     title="GPT-3.5-turbo model"
