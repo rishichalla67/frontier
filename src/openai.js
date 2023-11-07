@@ -24,7 +24,7 @@ const OpenAI = () => {
     prompts.find((prompt) => prompt?.category === "General")
   );
   const chatLogRef = useRef(null);
-  let gpt4 = "gpt-4-0613";
+  let gpt4 = "gpt-4-1106-preview";
   let gptTurbo = "gpt-3.5-turbo";
   function sortPromptsAlphabetically(prompts) {
     return prompts.sort((a, b) => {
